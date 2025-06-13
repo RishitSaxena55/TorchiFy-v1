@@ -32,10 +32,12 @@ This project is designed to replicate core features of PyTorch's `nn.Module` and
 ✅ Custom implementation of:
 - `Linear` layer with forward and backward pass  
 - `ReLU` activation function  
-- `Sigmoid` activation function  
-- `CrossEntropyLoss`  
-- Backpropagation using analytical gradients  
-- Simple Multi-layer Perceptron (MLP) network (`MLP0`)  
+- `Sigmoid` activation function
+- `Tanh` activation function
+- `CrossEntropyLoss` and `Mean Squared Error` loss functions 
+- Backpropagation using analytical gradients(`Stochastic Gradient Descent (SGD)`)
+- Simple Multi-layer Perceptron (MLP) network (`MLP0`, `MLP1`, `MLP2`, `MLP4`)
+- Regularization(`Batch Normalization`)
 - Unit tests and autograder support  
 
 ---
