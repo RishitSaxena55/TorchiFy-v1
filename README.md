@@ -1,6 +1,6 @@
 # 🔦 MyTorch: A Minimal PyTorch-like Deep Learning Library
 
-Welcome to **MyTorch**, a minimalist deep learning library implemented from scratch as part of **CMU 11-785: Introduction to Deep Learning - Homework 1 (HWP1)**.
+Welcome to **MyTorch**, a minimalist deep learning library implemented from scratch**.
 
 This project is designed to replicate core features of PyTorch's `nn.Module` and autograd systems, providing a hands-on understanding of how deep learning libraries work under the hood.
 
