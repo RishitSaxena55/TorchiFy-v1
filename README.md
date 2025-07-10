@@ -7,4 +7,4 @@ This project is designed to replicate core features of PyTorch's `nn.Module` and
 ---
 # Features:
 
-I have inplemented basic MLP models, Activations, Criterion, Losses, CNN, RNN, CTC, GRU, Beam Search, Greedy Search.
+I have implemented basic MLP models, Activations, Criterion, Losses, CNN, RNN, CTC, GRU, Beam Search, Greedy Search.
