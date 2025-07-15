@@ -1,6 +1,6 @@
 import numpy as np
 
-
+# Copy your Linear class from HW1P1 here
 class Identity:
 
     def forward(self, Z):
@@ -9,63 +9,53 @@ class Identity:
 
         return self.A
 
-    def backward(self, dLdA):
+    def backward(self):
 
         dAdZ = np.ones(self.A.shape, dtype="f")
 
-        return dAdZ*dLdA
+        return dAdZ
 
 
 class Sigmoid:
-    """
-    On same lines as above:
-    Define 'forward' function
-    Define 'backward' function
-    Read the writeup for further details on Sigmoid.
-    """
 
     def forward(self, Z):
-        self.A = 1/(1+np.exp(-Z))
-        return self.A
 
-    def backward(self, dLdA):
-        return (self.A-self.A*self.A)*dLdA
+        self.A = None  # TODO
 
+        return NotImplemented
+
+    def backward(self):
+
+        dAdZ = None  # TODO
+
+        return NotImplemented
 
 
 class Tanh:
-    """
-    On same lines as above:
-    Define 'forward' function
-    Define 'backward' function
-    Read the writeup for further details on Tanh.
-    """
+
     def forward(self, Z):
-        self.A=(np.exp(Z)-np.exp(-Z))/(np.exp(Z)+np.exp(-Z))
 
-        return self.A
+        self.A = None  # TODO
 
-    def backward(self, dLdA):
-        return (1-self.A**2)*dLdA
+        return NotImplemented
+
+    def backward(self):
+
+        dAdZ = None  # TODO
+
+        return NotImplemented
 
 
 class ReLU:
-    """
-    On same lines as above:
-    Define 'forward' function
-    Define 'backward' function
-    Read the writeup for further details on ReLU.
-    """
 
     def forward(self, Z):
 
-        self.A = np.maximum(0, Z)
+        self.A = None  # TODO
 
-        return self.A
+        return NotImplemented
 
-    def backward(self, dLdA):
-        return (self.A > 0).astype('float32')*dLdA
+    def backward(self):
 
+        dAdZ = None  # TODO
 
-
-
+        return NotImplemented
