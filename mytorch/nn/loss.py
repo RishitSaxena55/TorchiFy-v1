@@ -4,16 +4,11 @@
 import numpy as np
 import os
 
-# The following Criterion class will be used again as the basis for a number
-# of loss functions (which are in the form of classes so that they can be
-# exchanged easily (it's how PyTorch and other ML libraries do it))
-
+# ========== 1. Base Class ==========
 class Criterion(object):
     """
     Interface for loss functions.
     """
-
-    # Nothing needs done to this class, it's used by the following Criterion classes
 
     def __init__(self):
         self.logits = None
@@ -29,9 +24,10 @@ class Criterion(object):
     def derivative(self):
         raise NotImplemented
 
+# ========== 2. Softmax + CrossEntropy ==========
 class SoftmaxCrossEntropy(Criterion):
     """
-    Softmax loss
+    Softmax + Cross Entropy Loss
     """
 
     def __init__(self):
@@ -39,28 +35,58 @@ class SoftmaxCrossEntropy(Criterion):
 
     def forward(self, x, y):
         """
-        Argument:
-            x (np.array): (batch size, 10)
-            y (np.array): (batch size, 10)
-        Return:
-            out (np.array): (batch size, )
-        """
+        Args:
+            x (np.array): logits, shape (batch_size, num_classes)
+            y (np.array): one-hot labels, shape (batch_size, num_classes)
 
+        Returns:
+            loss (np.array): shape (batch_size,)
+        """
         self.logits = x
         self.labels = y
         self.batch_size = self.labels.shape[0]
-        exps = np.exp(self.logits)
-        self.softmax = exps / exps.sum(axis=1, keepdims=True)
-        self.loss = np.sum(np.multiply(self.labels, -np.log(self.softmax)), axis=1)
 
+        exps = np.exp(self.logits - np.max(self.logits, axis=1, keepdims=True))  # stability fix
+        self.softmax = exps / exps.sum(axis=1, keepdims=True)
+
+        self.loss = np.sum(-self.labels * np.log(self.softmax + 1e-9), axis=1)
         return self.loss
 
     def backward(self):
         """
-        Return:
-            out (np.array): (batch size, 10)
+        Returns:
+            gradient of loss w.r.t input logits, shape (batch_size, num_classes)
         """
+        return self.softmax - self.labels
 
-        self.gradient = self.softmax - self.labels
+# ========== 3. MSE Loss (for regression) ==========
+class MSELoss:
+    """
+    Mean Squared Error Loss
+    """
 
-        return self.gradient
+    def forward(self, A, Y):
+        """
+        Args:
+            A (np.array): predictions, shape (N, C)
+            Y (np.array): ground truths, shape (N, C)
+
+        Returns:
+            mse (float): mean squared error
+        """
+        self.A = A
+        self.Y = Y
+        N, C = A.shape
+        se = (A - Y) ** 2
+        sse = np.sum(se)
+        mse = sse / (N * C)
+        return mse
+
+    def backward(self):
+        """
+        Returns:
+            dLdA (np.array): gradient of loss w.r.t. predictions A, shape (N, C)
+        """
+        N, C = self.A.shape
+        dLdA = 2 * (self.A - self.Y) / (N * C)
+        return dLdA
