@@ -2,48 +2,49 @@ import numpy as np
 
 
 class Linear:
-
-    def __init__(self, in_features, out_features, debug=False):
-        """
-        Initialize the weights and biases with zeros
-        Checkout np.zeros function.
-        Read the writeup to identify the right shapes for all.
-        """
-        self.W = np.zeros((out_features, in_features))
-        self.b = np.zeros((out_features, 1))
-
+    
+    def __init__(self, in_features, out_features, debug = False):
+    
+        self.W    = np.zeros((out_features, in_features), dtype="f")
+        self.b    = np.zeros((out_features, 1), dtype="f")
+        self.dLdW = np.zeros((out_features, in_features), dtype="f")
+        self.dLdb = np.zeros((out_features, 1), dtype="f")
+        
         self.debug = debug
 
+    def __call__(self, A):
+        return self.forward(A)
+        
     def forward(self, A):
-        """
-        :param A: Input to the linear layer with shape (N, C0)
-        :return: Output Z of linear layer with shape (N, C1)
-        Read the writeup for implementation details
-        """
-        self.A = A
-        self.N = A.shape[0]  # store the batch size of input
-        self.Ones = np.ones((self.N, 1))
-        Z = A@self.W.T+self.Ones@self.b.T
-
+    
+        self.A    = A
+        self.N    = A.shape[0]
+        self.Ones = np.ones((self.N,1), dtype="f")
+        Z         = self.A @ self.W.T + self.Ones @ self.b.T
+        
         return Z
-
+        
     def backward(self, dLdZ):
-
-        dZdA = self.W.T
-        dZdW = self.A
-        dZdb = self.Ones
-
-        dLdA = dLdZ@self.W
-        dLdW = dLdZ.T@self.A
-        dLdb = dLdZ.T@self.Ones
-        self.dLdW = dLdW / self.N
-        self.dLdb = dLdb / self.N
+    
+        dZdA      = self.W.T
+        dZdW      = self.A
+        dZdi      = None
+        dZdb      = self.Ones
+        dLdA      = dLdZ @ dZdA.T
+        dLdW      = dLdZ.T @ dZdW
+        dLdi      = None
+        dLdb      = dLdZ.T @ dZdb
+        self.dLdW = dLdW 
+        self.dLdb = dLdb 
 
         if self.debug:
-
+            
             self.dZdA = dZdA
             self.dZdW = dZdW
+            self.dZdi = dZdi
             self.dZdb = dZdb
             self.dLdA = dLdA
-
+            self.dLdi = dLdi
+        
         return dLdA
+

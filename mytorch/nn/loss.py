@@ -1,63 +1,66 @@
+# Do not import any additional 3rd party external libraries as they will not
+# be available to AutoLab and are not needed (or allowed)
+
 import numpy as np
+import os
 
+# The following Criterion class will be used again as the basis for a number
+# of loss functions (which are in the form of classes so that they can be
+# exchanged easily (it's how PyTorch and other ML libraries do it))
 
-class MSELoss:
+class Criterion(object):
+    """
+    Interface for loss functions.
+    """
 
-    def forward(self, A, Y):
+    # Nothing needs done to this class, it's used by the following Criterion classes
+
+    def __init__(self):
+        self.logits = None
+        self.labels = None
+        self.loss = None
+
+    def __call__(self, x, y):
+        return self.forward(x, y)
+
+    def forward(self, x, y):
+        raise NotImplemented
+
+    def derivative(self):
+        raise NotImplemented
+
+class SoftmaxCrossEntropy(Criterion):
+    """
+    Softmax loss
+    """
+
+    def __init__(self):
+        super(SoftmaxCrossEntropy, self).__init__()
+
+    def forward(self, x, y):
         """
-        Calculate the Mean Squared error
-        :param A: Output of the model of shape (N, C)
-        :param Y: Ground-truth values of shape (N, C)
-        :Return: MSE Loss(scalar)
-
+        Argument:
+            x (np.array): (batch size, 10)
+            y (np.array): (batch size, 10)
+        Return:
+            out (np.array): (batch size, )
         """
 
-        self.A = A
-        self.Y = Y
-        self.N = self.A.shape[0]
-        self.C = self.A.shape[1]
-        se = (self.A-self.Y)*(self.A-self.Y)
-        sse = np.ones((self.N, 1)).T @ se @ np.ones((self.C, 1))
-        mse = sse/(self.N*self.C)
+        self.logits = x
+        self.labels = y
+        self.batch_size = self.labels.shape[0]
+        exps = np.exp(self.logits)
+        self.softmax = exps / exps.sum(axis=1, keepdims=True)
+        self.loss = np.sum(np.multiply(self.labels, -np.log(self.softmax)), axis=1)
 
-        return mse
+        return self.loss
 
     def backward(self):
-
-        dLdA = 2*(self.A-self.Y)/(self.N*self.C)
-
-        return dLdA
-
-
-class CrossEntropyLoss:
-
-    def forward(self, A, Y):
         """
-        Calculate the Cross Entropy Loss
-        :param A: Output of the model of shape (N, C)
-        :param Y: Ground-truth values of shape (N, C)
-        :Return: CrossEntropyLoss(scalar)
-
-        Refer the the writeup to determine the shapes of all the variables.
-        Use dtype ='f' whenever initializing with np.zeros()
+        Return:
+            out (np.array): (batch size, 10)
         """
-        self.A = A
-        self.Y = Y
-        self.N = A.shape[0]
-        self.C = A.shape[1]
 
-        Ones_C = np.ones((self.C, 1))
-        Ones_N = np.ones((self.N, 1))
-        exp_A=np.exp(A-np.max(A, axis=1, keepdims=True))
-        self.softmax =exp_A/np.sum(exp_A, axis=1, keepdims=True)
-        crossentropy = (-Y*np.log(self.softmax)) @ Ones_C
-        sum_crossentropy = Ones_N.T @ crossentropy
-        L = sum_crossentropy / self.N
+        self.gradient = self.softmax - self.labels
 
-        return L
-
-    def backward(self):
-
-        dLdA = (self.softmax-self.Y)/self.N
-
-        return dLdA
+        return self.gradient

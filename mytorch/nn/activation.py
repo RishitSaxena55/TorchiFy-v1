@@ -1,71 +1,43 @@
+# Do not import any additional 3rd party external libraries as they will not
+# be available to AutoLab and are not needed (or allowed)
 import numpy as np
-
-
-class Identity:
-
-    def forward(self, Z):
-
-        self.A = Z
-
-        return self.A
-
-    def backward(self, dLdA):
-
-        dAdZ = np.ones(self.A.shape, dtype="f")
-
-        return dAdZ*dLdA
-
 
 class Sigmoid:
     """
-    On same lines as above:
-    Define 'forward' function
-    Define 'backward' function
-    Read the writeup for further details on Sigmoid.
+    Sigmoid activation function
     """
-
     def forward(self, Z):
-        self.A = 1/(1+np.exp(-Z))
-        return self.A
+
+        self.A = Z
+        self.npVal = np.exp(-self.A)
+        return 1 / (1 + self.npVal)
 
     def backward(self, dLdA):
-        return (self.A-self.A*self.A)*dLdA
 
-
+        dAdZ = self.npVal / (1 + self.npVal) ** 2
+        return dAdZ*dLdA
 
 class Tanh:
     """
-    On same lines as above:
-    Define 'forward' function
-    Define 'backward' function
-    Read the writeup for further details on Tanh.
+    Modified Tanh to work with BPTT.
+    The tanh(x) result has to be stored elsewhere otherwise we will
+    have to store results for multiple timesteps in this class for each cell,
+    which could be considered bad design.
+
+    Now in the derivative case, we can pass in the stored hidden state and
+    compute the derivative for that state instead of the "current" stored state
+    which could be anything.
     """
     def forward(self, Z):
-        self.A=(np.exp(Z)-np.exp(-Z))/(np.exp(Z)+np.exp(-Z))
 
-        return self.A
+        self.A = Z
+        self.tanhVal =  np.tanh(self.A)
+        return self.tanhVal
 
-    def backward(self, dLdA):
-        return (1-self.A**2)*dLdA
-
-
-class ReLU:
-    """
-    On same lines as above:
-    Define 'forward' function
-    Define 'backward' function
-    Read the writeup for further details on ReLU.
-    """
-
-    def forward(self, Z):
-
-        self.A = np.maximum(0, Z)
-
-        return self.A
-
-    def backward(self, dLdA):
-        return (self.A > 0).astype('float32')*dLdA
-
-
-
-
+    def backward(self, dLdA, state=None):
+        if state is not None:
+            dAdZ = 1 - state*state
+            return dAdZ * dLdA
+        else:
+            dAdZ = 1 - self.tanhVal * self.tanhVal
+            return dAdZ * dLdA
