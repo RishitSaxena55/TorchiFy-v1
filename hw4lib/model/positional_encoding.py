@@ -3,7 +3,6 @@ from torch import nn
 import math
 
 '''
-TODO: Implement this Module.
 
 Specification:
 - Module should add positional information to input embeddings
@@ -15,6 +14,8 @@ Specification:
 - Should handle any sequence length up to max_len
 - Should raise error if input sequence length exceeds max_len
 '''
+
+
 class PositionalEncoding(nn.Module):
     def __init__(self, d_model, max_len):
         """
@@ -26,7 +27,7 @@ class PositionalEncoding(nn.Module):
         Steps:
         1. Call parent class constructor using super().__init__()
         2. Call create_pe_table to initialize positional encoding matrix
-        """     
+        """
         super().__init__()
         self.create_pe_table(d_model, max_len)
 
@@ -42,12 +43,23 @@ class PositionalEncoding(nn.Module):
             - Initializes the positional encoding buffer 'pe' 
               of shape (1, max_len, d_model) (in order to broadcast with input tensor)
         """
-        # TODO: Implement create_pe_table
-        raise NotImplementedError # Remove once implemented
-        pe = NotImplementedError
+        # Implement create_pe_table
+
+        pe = torch.zeros(max_len, d_model)
+        for i in range(max_len):
+            for j in range(0, d_model, 2):
+                denom = 10000 ** (j / d_model)
+                # even
+                pe[i, j] = math.sin(i / denom)
+
+                # odd
+                if j+1 < d_model:
+                    pe[i, j + 1] = math.cos(i / denom)
+
+        pe = pe.unsqueeze(0)
+
         # Register as buffer to save with model state
         self.register_buffer('pe', pe)
-        
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -59,11 +71,13 @@ class PositionalEncoding(nn.Module):
         Errors:
             - ValueError: If sequence length exceeds maximum length 
         """
-        # TODO: Implement forward
+        # Implement forward
         # Step 1: Get sequence length from input tensor
         seq_len = x.size(1)
         # Step 2: Verify sequence length doesn't exceed maximum length, raise error if it does
         if seq_len > self.pe.size(1):
             raise ValueError(f"Sequence length {seq_len} exceeds the maximum length {self.pe.size(1)}")
         # Step 3: Add positional encodings to input
-        raise NotImplementedError # Remove once implemented
+        out = x + self.pe[:, :seq_len, :]
+
+        return out
