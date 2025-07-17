@@ -1,7 +1,7 @@
+import numpy as np
 import torch
 
 ''' 
-TODO: Implement this function.
 
 Specification:
 - Function should create a padding mask that identifies padded positions in the input
@@ -25,11 +25,16 @@ def PadMask(padded_input, input_lengths):
             - padding positions are marked with True 
             - non-padding positions are marked with False.
     """
-    # TODO: Implement PadMask
-    raise NotImplementedError # Remove once implemented
+    # Implement PadMask
+    N, T = padded_input.shape[0], padded_input.shape[1]
+    mask = torch.ones((N, T))
+    for n in range(N):
+        mask[n, :input_lengths[n]] = torch.zeros(input_lengths[n])
+
+    return mask
+
 
 ''' 
-TODO: Implement this function.
 
 Specification:
 - Function should create a causal mask for self-attention
@@ -51,6 +56,13 @@ def CausalMask(padded_input):
             - non-causal positions (don't attend to) are marked with True 
             - causal positions (can attend to) are marked with False.
     """
-    # TODO: Implement CausalMask
-    raise NotImplementedError # Remove once implemented
+    # Implement CausalMask
+
+    T = padded_input.shape[1]
+    mask = torch.ones((T, T))
+    mask = torch.tril(mask, diagonal=-1)
+    mask = torch.transpose(mask, 0, 1)
+
+    return mask
+
 
