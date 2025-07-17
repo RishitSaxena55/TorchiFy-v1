@@ -62,13 +62,13 @@ class LMDataset(Dataset):
 
         # Set up data paths 
         # Join root and partition to get the text directory
-        self.text_dir = os.path.join(self.config['root'], self.partition)
+        self.text_dir = os.path.join(self.config.get('root'), self.partition)
 
         # Get all text files in the text directory in sorted order
         self.text_files = sorted(os.listdir(self.text_dir))
 
         # Take subset
-        subset_size = self.config['subset_size']
+        subset_size = int(self.config.get('subset') * len(self.text_files))
         self.text_files = self.text_files[:subset_size]
 
         # Initialize lists to store transcripts
@@ -85,7 +85,7 @@ class LMDataset(Dataset):
         for file in tqdm(self.text_files):
             # Load the transcript
             # Use np.load to load the numpy array and convert to list and then join to string
-            transcript = "".join(list(np.load(file)))
+            transcript = "".join(list(np.load(os.path.join(self.text_dir, file)).item()))
 
             # Track character count (before tokenization)
             # DO NOT MODIFY
@@ -103,10 +103,8 @@ class LMDataset(Dataset):
             self.text_max_len = max(self.text_max_len, len(tokenized) + 1)
 
             # Create shifted and golden versions by adding sos and eos tokens
-            transcript_shifted = tokenized.insert(0, self.sos_token)
-            transcript_golden = tokenized.append(self.eos_token)
-            self.transcripts_shifted.append(transcript_shifted)
-            self.transcripts_golden.append(transcript_golden)
+            self.transcripts_shifted.append([self.sos_token] + tokenized)
+            self.transcripts_golden.append(tokenized + [self.eos_token])
 
         # Calculate average characters per token
         # DO NOT MODIFY
