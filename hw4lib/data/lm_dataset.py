@@ -8,7 +8,6 @@ from torch.nn.utils.rnn import pad_sequence
 from .tokenizer import H4Tokenizer
 
 '''
-TODO: Implement this class.
 
 Specification:
 - Dataset for training and evaluating language models
