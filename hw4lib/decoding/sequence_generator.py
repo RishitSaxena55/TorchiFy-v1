@@ -41,11 +41,13 @@ Implementation Notes:
    - Support early stopping
 '''
 
+
 class SequenceGenerator:
     """
     A class for generating sequences using various decoding strategies.
     Supports greedy search, beam search, and sampling with top-k/nucleus filtering.
     """
+
     def __init__(
             self,
             score_fn: Callable,
@@ -84,7 +86,7 @@ class SequenceGenerator:
         """
         if penalty == 1.0:
             return logits
-        
+
         # Handle both regular and beam search shapes
         if logits.dim() == 2:
             # Greedy search: (batch_size, vocab_size)
@@ -93,19 +95,20 @@ class SequenceGenerator:
                 logits[idx, unique_tokens] = logits[idx, unique_tokens] / torch.where(
                     logits[idx, unique_tokens] > 0,
                     torch.full_like(logits[idx, unique_tokens], penalty),
-                    torch.full_like(logits[idx, unique_tokens], 1.0/penalty)
+                    torch.full_like(logits[idx, unique_tokens], 1.0 / penalty)
                 )
         else:
             # Beam search: (batch_size, beam_width, vocab_size)
             for batch_idx in range(sequences.size(0)):
                 for beam_idx in range(sequences.size(1)):
                     unique_tokens = torch.unique(sequences[batch_idx, beam_idx])
-                    logits[batch_idx, beam_idx, unique_tokens] = logits[batch_idx, beam_idx, unique_tokens] / torch.where(
+                    logits[batch_idx, beam_idx, unique_tokens] = logits[
+                                                                     batch_idx, beam_idx, unique_tokens] / torch.where(
                         logits[batch_idx, beam_idx, unique_tokens] > 0,
                         torch.full_like(logits[batch_idx, beam_idx, unique_tokens], penalty),
-                        torch.full_like(logits[batch_idx, beam_idx, unique_tokens], 1.0/penalty)
+                        torch.full_like(logits[batch_idx, beam_idx, unique_tokens], 1.0 / penalty)
                     )
-        
+
         return logits
 
     def _filter_logits(
@@ -163,9 +166,26 @@ class SequenceGenerator:
             raise ValueError("Input x must be 2-dimensional (batch_size, seq_len)")
         if self.max_length < x.size(1):
             raise ValueError("max_length must be >= input sequence length")
-        
-        # TODO: Implement greedy search
-        raise NotImplementedError # Remove once implemented
+
+        B, T = x.shape
+        scores = torch.zeros(B)
+        finished_flags = torch.zeros(B)
+
+        for t in range(self.max_length - T):
+            if torch.all(finished_flags):
+                break
+
+            logits = self.score_fn(x)
+            logits = self._apply_repeat_penalty(logits, x, repeat_penalty)
+            logits = logits / temperature
+            log_probs = nn.LogSoftmax(dim=-1)(logits)
+            next_tokens = torch.argmax(log_probs, -1)
+            token_scores = log_probs[torch.arange(B), next_tokens]
+            scores = torch.where(finished_flags == 0, token_scores, scores)
+            x = torch.cat((x, torch.unsqueeze(next_tokens, 1)), dim=-1)
+            finished_flags = torch.where(next_tokens == self.tokenizer.eos_id, torch.ones_like(finished_flags), finished_flags)
+
+        return x, scores
 
     def generate_beam(
             self,
@@ -195,9 +215,9 @@ class SequenceGenerator:
             raise ValueError("beam_width must be >= 1")
         if self.max_length < x.size(1):
             raise ValueError("max_length must be >= input sequence length")
-        
+
         # TODO: Implement beam search
-        raise NotImplementedError # Remove once implemented
+        raise NotImplementedError  # Remove once implemented
 
     def generate_sample(
             self,
@@ -231,7 +251,7 @@ class SequenceGenerator:
             raise ValueError("top_k must be >= 0")
         if not 0 < top_p <= 1.0:
             raise ValueError("top_p must be > 0 and <= 1.0")
-        
+
         # Initialize scores and finished flag
         batch_size = x.size(0)
         scores = torch.zeros(batch_size, device=x.device)
@@ -243,20 +263,20 @@ class SequenceGenerator:
                 break
 
             # Get logits and apply filtering
-            next_scores = self.score_fn(x) # (batch_size, vocab_size)
+            next_scores = self.score_fn(x)  # (batch_size, vocab_size)
             filtered_logits = self._filter_logits(next_scores, temperature, top_k, top_p)
             log_probs = torch.log_softmax(filtered_logits, dim=-1)
-            
+
             # We need probabilities for multinomial sampling
             probs = torch.exp(log_probs)
-            next_tokens = torch.multinomial(probs, num_samples=1).squeeze(-1) # (batch_size,)
-            token_scores = log_probs.gather(1, next_tokens.unsqueeze(1)).squeeze(1) # (batch_size,)
+            next_tokens = torch.multinomial(probs, num_samples=1).squeeze(-1)  # (batch_size,)
+            token_scores = log_probs.gather(1, next_tokens.unsqueeze(1)).squeeze(1)  # (batch_size,)
 
             # Update scores only for unfinished sequences
             scores = torch.where(finished, scores, scores + token_scores)
 
             # Append next tokens
-            x = torch.cat([x, next_tokens.unsqueeze(1)], dim=1) # (batch_size, seq_len + 1)
+            x = torch.cat([x, next_tokens.unsqueeze(1)], dim=1)  # (batch_size, seq_len + 1)
 
             # Check if any sequence has reached EOS 
             is_eos = (next_tokens == self.tokenizer.eos_id)
@@ -282,7 +302,7 @@ class SequenceGenerator:
                 end_idx = eos_indices[0].item() + 1
                 return seq[:end_idx]
             return seq
-        
+
         # Handle batched sequences
         eos_mask = seq == tokenizer.eos_id  # (batch_size, sequence_length)
         # Find first EOS token in each sequence
