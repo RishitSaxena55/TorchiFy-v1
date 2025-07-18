@@ -183,7 +183,7 @@ class SequenceGenerator:
             token_scores = log_probs[torch.arange(B), next_tokens]
             scores = torch.where(finished_flags == 0, token_scores, scores)
             x = torch.cat((x, torch.unsqueeze(next_tokens, 1)), dim=-1)
-            finished_flags = torch.where(next_tokens == self.tokenizer.eos_id, torch.ones_like(finished_flags), finished_flags)
+            finished_flags = torch.where(next_tokens == self.tokenizer.eos_id, 1, finished_flags)
 
         return x, scores
 
