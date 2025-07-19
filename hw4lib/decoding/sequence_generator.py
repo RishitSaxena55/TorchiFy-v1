@@ -169,7 +169,10 @@ class SequenceGenerator:
 
         B, T = x.shape
         scores = torch.zeros(B)
+        scores = scores.to(self.device)
         finished_flags = torch.zeros(B)
+        finished_flags = finished_flags.to(self.device)
+
 
         for t in range(self.max_length - T):
             if torch.all(finished_flags):
@@ -180,7 +183,8 @@ class SequenceGenerator:
             logits = logits / temperature
             log_probs = nn.LogSoftmax(dim=-1)(logits)
             next_tokens = torch.argmax(log_probs, -1)
-            token_scores = log_probs[torch.arange(B), next_tokens]
+            token_scores = log_probs[torch.arange(B, device=self.device), next_tokens]
+            token_scores = token_scores.to(self.device)
             scores = torch.where(finished_flags == 0, token_scores, scores)
             x = torch.cat((x, torch.unsqueeze(next_tokens, 1)), dim=-1)
             finished_flags = torch.where(next_tokens == self.tokenizer.eos_id, 1, finished_flags)
