@@ -152,7 +152,7 @@ def main():
             }
         },
         'data': {
-            'root': "./hw4_data_subset/hw4p1_data",
+            'root': "./transformer lib/hw4p1_data",
             'train_partition': "train",
             'val_partition': "valid",
             'test_partition': "test",
