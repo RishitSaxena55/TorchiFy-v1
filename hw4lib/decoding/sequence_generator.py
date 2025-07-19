@@ -167,27 +167,28 @@ class SequenceGenerator:
         if self.max_length < x.size(1):
             raise ValueError("max_length must be >= input sequence length")
 
-        B, T = x.shape
-        scores = torch.zeros(B)
-        scores = scores.to(self.device)
-        finished_flags = torch.zeros(B)
-        finished_flags = finished_flags.to(self.device)
+        # Implement greedy search
+        # writeup psuedocode
+        scores = torch.zeros(x.size(0), device=x.device)
+        finished = torch.zeros(x.size(0), dtype=torch.bool, device=x.device)
 
+        for t in range(self.max_length - x.size(1)):
 
-        for t in range(self.max_length - T):
-            if torch.all(finished_flags):
+            if finished.all():
                 break
 
             logits = self.score_fn(x)
             logits = self._apply_repeat_penalty(logits, x, repeat_penalty)
-            logits = logits / temperature
-            log_probs = nn.LogSoftmax(dim=-1)(logits)
-            next_tokens = torch.argmax(log_probs, -1)
-            token_scores = log_probs[torch.arange(B, device=self.device), next_tokens]
-            token_scores = token_scores.to(self.device)
-            scores = torch.where(finished_flags == 0, token_scores, scores)
-            x = torch.cat((x, torch.unsqueeze(next_tokens, 1)), dim=-1)
-            finished_flags = torch.where(next_tokens == self.tokenizer.eos_id, 1, finished_flags)
+            logits = self._filter_logits(logits, temperature)
+
+            next_tokens = torch.argmax(logits, dim=-1)
+            token_scores = torch.gather(logits, 1, next_tokens.unsqueeze(1)).squeeze(1)
+
+            scores = torch.where(finished, scores, scores + token_scores)
+
+            x = torch.cat([x, next_tokens.unsqueeze(1)], dim=1)
+
+            finished = finished | (next_tokens == self.tokenizer.eos_id)
 
         return x, scores
 
