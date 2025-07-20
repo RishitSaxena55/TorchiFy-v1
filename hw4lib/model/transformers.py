@@ -267,11 +267,13 @@ class EncoderDecoderTransformer(nn.Module):
 
         # Create encoder layers
         # Use ModuleList to create a list of encoder layers
-        self.enc_layers = nn.ModuleList([SelfAttentionEncoderLayer(d_model, num_encoder_heads, d_ff_encoder, dropout) for i in range(num_encoder_layers)])  # ModuleList of encoder layers
+        self.enc_layers = nn.ModuleList([SelfAttentionEncoderLayer(d_model, num_encoder_heads, d_ff_encoder, dropout)
+                                         for i in range(num_encoder_layers)])  # ModuleList of encoder layers
 
         # Create decoder layers
         # Use ModuleList to create a list of decoder layers
-        self.dec_layers = nn.ModuleList([CrossAttentionDecoderLayer(d_model, num_decoder_heads, d_ff_decoder, dropout) for i in range(num_decoder_layers)])  # ModuleList of decoder layers
+        self.dec_layers = nn.ModuleList([CrossAttentionDecoderLayer(d_model, num_decoder_heads, d_ff_decoder, dropout)
+                                         for i in range(num_decoder_layers)])  # ModuleList of decoder layers
 
         # Create source and target embeddings and other layers
         # Use SpeechEmbedding class to create the source embedding

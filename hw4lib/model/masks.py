@@ -45,24 +45,23 @@ Specification:
 - Mask should be on same device as input tensor
 - Mask should be upper triangular (excluding diagonal)
 '''
+
+
 def CausalMask(padded_input):
     """ 
     Create a mask to identify non-causal positions. 
     Args:
         padded_input: The input tensor with padding, shape (N, T, ...) or (N, T).
-    
+
     Returns:
-        A boolean mask tensor with shape (T, T), where: 
-            - non-causal positions (don't attend to) are marked with True 
+        A boolean mask tensor with shape (T, T), where:
+            - non-causal positions (don't attend to) are marked with True
             - causal positions (can attend to) are marked with False.
     """
     # Implement CausalMask
 
     T = padded_input.shape[1]
-    mask = torch.ones((T, T))
-    mask = torch.tril(mask, diagonal=-1)
-    mask = torch.transpose(mask, 0, 1)
+    mask = torch.triu(torch.ones((T, T), dtype=torch.bool, device=padded_input.device), diagonal=1)
 
     return mask
-
 

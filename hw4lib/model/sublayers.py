@@ -74,7 +74,8 @@ class SelfAttentionLayer(nn.Module):
                                        key_padding_mask=key_padding_mask,
                                        need_weights=True,
                                        attn_mask=attn_mask,
-                                       average_attn_weights=True)
+                                       average_attn_weights=True,
+                                       is_causal=True if attn_mask is not None else False)
 
         # For some regularization you can apply dropout and then add residual connection
         x = self.dropout(x)
