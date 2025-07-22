@@ -58,8 +58,6 @@ class ASRTrainer(BaseTrainer):
     def __init__(self, model, tokenizer, config, run_name, config_file, device=None):
         super().__init__(model, tokenizer, config, run_name, config_file, device)
 
-        # TODO: Implement the __init__ method
-
         # Initialize CE loss
         # How would you set the ignore_index? 
         # Use value in config to set the label_smoothing argument
@@ -200,7 +198,7 @@ class ASRTrainer(BaseTrainer):
         # TODO: In-fill the _validate_epoch method
 
         # Call recognize
-        results = self.recognize(dataloader)
+        results = self.recognize(dataloader, self._get_evaluation_recognition_configs())
 
         # Extract references and hypotheses from results
         references = [result['target'] for result in results]
@@ -300,7 +298,7 @@ class ASRTrainer(BaseTrainer):
         """
 
         # Get recognition configs
-        recognition_configs = self._get_evaluation_recognition_configs(self.model, self.model.state_dict())
+        recognition_configs = self._get_evaluation_recognition_configs()
 
         eval_results = {}
         # Evaluate with each recognition config
@@ -381,10 +379,16 @@ class ASRTrainer(BaseTrainer):
         with torch.inference_mode():
             for i, batch in enumerate(dataloader):
                 # Unpack batch and move to device
-                # TODO: Handle both cases where targets may or may not be None (val set v. test set) 
-                feats, _, targets_golden, feat_lengths, _ = batch
+                # Handle both cases where targets may or may not be None (val set v. test set)
+                if batch.size() == 5:
+                    feats, _, targets_golden, feat_lengths, _ = batch
+
+                    targets_golden = targets_golden.to(self.device)
+
+                else:
+                    feats, feat_lengths = batch
+
                 feats = feats.to(self.device)
-                targets_golden = targets_golden.to(self.device)
                 feat_lengths = feat_lengths.to(self.device)
 
                 # Encode speech features to hidden states
@@ -409,8 +413,8 @@ class ASRTrainer(BaseTrainer):
                 if recognition_config['beam_width'] > 1:
                     # If you have implemented beam search, generate sequences using beam search
                     seqs, scores = generator.generate_beam(targets_golden, recognition_config.get('beam_width'),
-                                                           recognition_config('temperature'),
-                                                           recognition_config('repeat_penalty'))
+                                                           recognition_config.get('temperature'),
+                                                           recognition_config.get('repeat_penalty'))
                     # Pick best beam
                     seqs = seqs[:, 0, :]
                     scores = scores[:, 0]
@@ -453,7 +457,7 @@ class ASRTrainer(BaseTrainer):
     def _get_evaluation_recognition_configs(self, lm_model: Optional[DecoderOnlyTransformer] = None,
                                             lm_weight: float = 0.0) -> Dict[str, Dict[str, Any]]:
         """
-        Get a list of recognition configurations for seqential evaluation.
+        Get a list of recognition configurations for sequential evaluation.
         
         Returns:
             Dictionary containing recognition configurations
