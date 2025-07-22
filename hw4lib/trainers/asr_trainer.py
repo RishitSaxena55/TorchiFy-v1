@@ -199,12 +199,12 @@ class ASRTrainer(BaseTrainer):
         """
         # TODO: In-fill the _validate_epoch method
 
-        # TODO: Call recognize
-        results = self.recognize(dataloader, )
+        # Call recognize
+        results = self.recognize(dataloader)
 
-        # TODO: Extract references and hypotheses from results
-        references = NotImplementedError
-        hypotheses = NotImplementedError
+        # Extract references and hypotheses from results
+        references = [result['target'] for result in results]
+        hypotheses = [result['generated'] for result in results]
 
         # Calculate metrics on full batch
         metrics = self._calculate_asr_metrics(references, hypotheses)
@@ -226,9 +226,6 @@ class ASRTrainer(BaseTrainer):
         if self.optimizer is None:
             raise ValueError("Optimizer is not initialized, initialize it first!")
 
-        # TODO: In-fill the train method
-        raise NotImplementedError  # Remove once implemented
-
         # Set max transcript length
         self.text_max_len = max(val_dataloader.dataset.text_max_len, train_dataloader.dataset.text_max_len)
 
@@ -240,11 +237,11 @@ class ASRTrainer(BaseTrainer):
 
         for epoch in range(self.current_epoch, self.current_epoch + epochs):
 
-            # TODO: Train for one epoch
-            train_metrics, train_attn = NotImplementedError, NotImplementedError
+            # Train for one epoch
+            train_metrics, train_attn = self._train_epoch(train_dataloader)
 
-            # TODO: Validate
-            val_metrics, val_results = NotImplementedError, NotImplementedError
+            # Validate
+            val_metrics, val_results = self._validate_epoch(val_dataloader)
 
             # Step ReduceLROnPlateau scheduler with validation loss
             if isinstance(self.scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
@@ -303,7 +300,7 @@ class ASRTrainer(BaseTrainer):
         """
 
         # Get recognition configs
-        recognition_configs = self._get_evaluation_recognition_configs(self.model, )
+        recognition_configs = self._get_evaluation_recognition_configs(self.model, self.model.state_dict())
 
         eval_results = {}
         # Evaluate with each recognition config
@@ -349,6 +346,7 @@ class ASRTrainer(BaseTrainer):
         if max_length is None and not hasattr(self, 'text_max_len'):
             raise ValueError("text_max_len is not set. Please run training loop first or provide a max_length")
 
+        self.recognition_config = recognition_config
         if recognition_config is None:
             # Default config (greedy search)
             recognition_config = {
@@ -407,17 +405,19 @@ class ASRTrainer(BaseTrainer):
                 batch_size = feats.size(0)
                 prompts = torch.full(batch_size, self.tokenizer.sos_id)
 
-                # TODO: Generate sequences
+                # Generate sequences
                 if recognition_config['beam_width'] > 1:
                     # If you have implemented beam search, generate sequences using beam search
-                    seqs, scores = generator.generate_beam(targets_golden, recognition_config.get('beam_width'), recognition_config('temperature'), recognition_config('repeat_penalty'))
+                    seqs, scores = generator.generate_beam(targets_golden, recognition_config.get('beam_width'),
+                                                           recognition_config('temperature'),
+                                                           recognition_config('repeat_penalty'))
                     # Pick best beam
                     seqs = seqs[:, 0, :]
                     scores = scores[:, 0]
                 else:
-                    # TODO: Generate sequences using greedy search
-                    seqs, scores = NotImplementedError, NotImplementedError
-                    raise NotImplementedError  # Remove if you implemented the greedy search method
+                    # Generate sequences using greedy search
+                    seqs, scores = generator.generate_greedy(targets_golden, recognition_config.get('temperature'),
+                                                             recognition_config.get('repeat_penalty'))
 
                 # Clean up
                 del feats, feat_lengths, encoder_output, pad_mask_src, prompts
