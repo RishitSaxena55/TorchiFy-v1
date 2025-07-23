@@ -250,7 +250,7 @@ def test_forward_order(feedforward):
 
 
 def main():
-    from hw4lib.model import FeedForwardLayer
+    from transformer.model import FeedForwardLayer
     from tests.testing_framework import TestingFramework
 
     framework = TestingFramework(

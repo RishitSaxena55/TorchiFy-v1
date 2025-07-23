@@ -137,18 +137,18 @@ def main():
     Main function to run the dataset tests using the testing framework.
     """
 
-    from hw4lib.data.lm_dataset import LMDataset
-    from hw4lib.data.tokenizer import H4Tokenizer
+    from transformer.data.lm_dataset import LMDataset
+    from transformer.data.tokenizer import H4Tokenizer
     from tests.testing_framework import TestingFramework
 
     dummy_config = {
         'tokenization': {
             'token_type': "1k",       # [char, 1k, 5k, 10k]
             'token_map': {
-                'char': './hw4lib/data/tokenizer_jsons/tokenizer_char.json',
-                '1k'  : './hw4lib/data/tokenizer_jsons/tokenizer_1000.json',  
-                '5k'  : './hw4lib/data/tokenizer_jsons/tokenizer_5000.json',
-                '10k' : './hw4lib/data/tokenizer_jsons/tokenizer_10000.json'
+                'char': './transformer/data/tokenizer_jsons/tokenizer_char.json',
+                '1k'  : './transformer/data/tokenizer_jsons/tokenizer_1000.json',
+                '5k'  : './transformer/data/tokenizer_jsons/tokenizer_5000.json',
+                '10k' : './transformer/data/tokenizer_jsons/tokenizer_10000.json'
             }
         },
         'data': {

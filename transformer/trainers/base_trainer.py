@@ -5,9 +5,9 @@ import torch
 import matplotlib.pyplot as plt
 import seaborn as sns
 import torch.nn as nn
-from hw4lib.data.tokenizer import H4Tokenizer
-from hw4lib.utils import create_optimizer
-from hw4lib.model import DecoderOnlyTransformer, EncoderDecoderTransformer
+from transformer.data.tokenizer import H4Tokenizer
+from transformer.utils import create_optimizer
+from transformer.model import DecoderOnlyTransformer, EncoderDecoderTransformer
 import os
 import shutil
 from abc import ABC, abstractmethod
