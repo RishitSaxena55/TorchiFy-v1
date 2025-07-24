@@ -84,53 +84,6 @@ TorchiFy breaks the complexity of transformers into understandable, testable com
 
 ---
 
-## 🧱 File Structure Explained
-
-```
-TorchiFy-v1/
-├── torchiFy/
-│   ├── core/
-│   │   ├── attention.py
-│   │   ├── feedforward.py
-│   │   ├── embeddings.py
-│   │   ├── transformer_block.py
-│   ├── nn/
-│   │   ├── utils.py
-│   │   ├── mask.py
-│   ├── models/
-│   │   ├── gpt.py
-│   │   ├── whisper.py
-│   │   ├── encoder_decoder.py
-│   ├── decode/
-│   │   ├── beam.py
-│   │   ├── greedy.py
-│   ├── audio/
-│   │   ├── preprocess.py
-│   │   ├── tokenizer.py
-│   ├── train/
-│   │   ├── engine.py
-│   │   ├── losses.py
-│   │   ├── optim.py
-│   ├── utils/
-│   │   ├── logger.py
-│   │   ├── timer.py
-│   │   ├── weights.py
-│   ├── tests/
-│   │   ├── test_attention.py
-│   │   ├── test_gpt.py
-├── configs/
-│   ├── gpt_small.yaml
-│   ├── whisper_base.yaml
-├── scripts/
-│   ├── train_gpt.py
-│   ├── infer_speech.py
-│   ├── convert_audio.py
-├── README.md
-└── requirements.txt
-```
-
----
-
 ## 🔧 Installation
 
 ```bash
