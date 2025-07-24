@@ -1,102 +1,225 @@
-# MyTorch-v1
+# ⚡️TorchiFy-v1
 
-![License](https://img.shields.io/github/license/RishitSaxena55/MyTorch-v1)
+![License](https://img.shields.io/github/license/RishitSaxena55/TorchiFy-v1)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
 ![Language](https://img.shields.io/badge/python-3.10+-blue)
-![Visitors](https://komarev.com/ghpvc/?username=RishitSaxena55\&color=blue)
-![Stars](https://img.shields.io/github/stars/RishitSaxena55/MyTorch-v1?style=social)
+![Visitors](https://komarev.com/ghpvc/?username=RishitSaxena55&color=blue)
+![Stars](https://img.shields.io/github/stars/RishitSaxena55/TorchiFy-v1?style=social)
 
-> **"A visionary deep learning framework to understand and build the future of transformers from the ground up."**
-
-MyTorch-v1 is not just a codebase—it’s a journey into the inner mechanics of intelligence. This open-source research-grade deep learning library builds both **decoder-only** and **encoder-decoder transformer architectures** from scratch, illuminating every layer, mask, and token that drives the world’s most powerful AI models.
-
-GitHub: [RishitSaxena55/MyTorch-v1](https://github.com/RishitSaxena55/MyTorch-v1)
+> **"TorchiFy: Engineering Intelligence from First Principles — Build LLMs, Whisper-style ASR, and Transformer Architectures from Scratch."**
 
 ---
 
-## 🌌 Vision
+## 🚀 Introduction
 
-The vision of MyTorch is rooted in transparency and self-reliance. It empowers students, researchers, and engineers to break free from the abstraction-heavy frameworks and engage with the real mathematics, tensor flows, and training mechanics that drive transformer models. Whether you’re a beginner aiming to learn or an expert prototyping new architectures, MyTorch gives you control and clarity.
+**TorchiFy-v1** is a visionary, fully modular deep learning research framework written in pure PyTorch. It is designed to **build decoder-only, encoder-decoder, and speech-transformer architectures** entirely from scratch—without relying on abstracted libraries. Whether you're building GPT-style chatbots, Whisper-like ASR systems, or next-gen AI interfaces, **TorchiFy** puts the architecture in your hands.
 
----
-
-## 💡 Why MyTorch Stands Out
-
-This project isn't just another transformer framework—it fills the crucial educational and architectural gap that mainstream libraries avoid. MyTorch offers a hands-on journey where every layer is crafted manually, encouraging deep understanding while enabling experimentation.
-
-| Feature                  | MyTorch              | HuggingFace     | Fairseq      |
-| ------------------------ | -------------------- | --------------- | ------------ |
-| Transformer from Scratch | ✅ Built line-by-line | ❌ Abstracted    | ❌ Predefined |
-| No Framework Dependency  | ✅ PyTorch only       | ❌ Heavy deps    | ❌            |
-| Speech + Text            | ✅ Native support     | ⚠️ Text-focused | ✅            |
-| Fully Test-Covered       | ✅ High coverage      | ⚠️ Partial      | ✅            |
-| Educational              | ✅ Designed to teach  | ⚠️ Complex      | ❌            |
+GitHub: [RishitSaxena55/TorchiFy-v1](https://github.com/RishitSaxena55/TorchiFy-v1)
 
 ---
 
-## 📣 Real-World Use Cases
+## 🌌 Philosophy
 
-Use MyTorch to explore, experiment, or launch real-world applications:
+At the core of **TorchiFy** lies a mission:  
+> **Empower the curious to understand and build the next frontier of deep learning models—line-by-line, token-by-token.**
 
-* 📖 **GPT-like Chatbot Prototypes** — Build custom LLMs from scratch for dialog systems
-* 🗣️ **Whisper-style ASR** — Full speech-to-text pipeline with decoding and LM rescoring
-* 🏫 **Courses & Bootcamps** — Use MyTorch as a teaching backbone in NLP/ML curriculum
-* 🔬 **Research Experiments** — Prototype decoding, embeddings, memory compression, and more
-* ⚙️ **Inference Optimization** — Tweak beam size, cache attention maps, and test latency
+TorchiFy is **educational**, **research-ready**, and **production-focused**, all at once.
 
 ---
 
-## 🔬 Design Philosophy
+## 🧠 What Makes TorchiFy Unique
 
-Every line of MyTorch was written with care and purpose:
-
-1. **Transparency** — Everything from softmax to beam decoding is visible and modifiable.
-2. **Extensibility** — Add rotary embeddings, custom loss, relative attention with minimal effort.
-3. **Testability** — Modular design and independent submodules allow unit testing at scale.
-4. **Education First** — Variable names, module structure, and docstrings all aim to clarify.
-5. **Minimalism** — Only essential abstractions are kept. Simplicity leads to clarity.
+| Feature                        | TorchiFy              | HuggingFace     | Fairseq        |
+| ----------------------------- | --------------------- | --------------- | -------------- |
+| Transformer from Scratch      | ✅ Yes (modular)       | ❌ No            | ❌ No           |
+| PyTorch Only (No Frameworks)  | ✅ Zero abstraction    | ❌ Heavy deps    | ❌              |
+| ASR + Text Integration        | ✅ Native (Whisper)    | ⚠️ Text-focused  | ✅              |
+| Fully Unit Tested             | ✅ High Coverage       | ⚠️ Incomplete    | ✅              |
+| Educational Purpose           | ✅ Clear & Commented   | ❌ Obscure APIs  | ❌              |
+| Inference Optimization Tools  | ✅ Beam + Caching      | ⚠️ Partial       | ⚠️ Partial      |
+| Training Engine               | ✅ Built-in            | ⚠️ Requires Trainer | ⚠️              |
 
 ---
 
-## 📌 Table of Contents
+## 🧭 Project Overview
 
-* [Vision](#-vision)
-* [Why MyTorch Stands Out](#-why-mytorch-stands-out)
-* [Real-World Use Cases](#-real-world-use-cases)
-* [Design Philosophy](#-design-philosophy)
-* [Overview](#overview)
-* [Key Innovations](#key-innovations)
-* [Architecture Diagrams](#architecture-diagrams)
-* [Installation](#installation)
-* [Getting Started](#getting-started)
-* [Directory Layout](#directory-layout)
-* [Core Modules](#core-modules)
-* [Training & Evaluation](#training--evaluation)
-* [Inference Strategies](#inference-strategies)
-* [Testing & Validation](#testing--validation)
-* [License](#license)
-* [Contributing](#-contributing)
+TorchiFy breaks the complexity of transformers into understandable, testable components:
+
+- ✅ **Custom Multi-Head Attention**
+- ✅ **Causal & Bidirectional Masks**
+- ✅ **Sinusoidal, Learned & Rotary Embeddings**
+- ✅ **Flexible Transformer Blocks (Decoder, Encoder, Hybrid)**
+- ✅ **Audio + Text Frontends**
+- ✅ **Modular Beam Search & Greedy Decoding**
+- ✅ **End-to-End Whisper-like ASR**
+- ✅ **LLM Pretraining Routines**
+- ✅ **FP16 Support & Caching for Deployment**
+
+---
+
+## 💥 Use TorchiFy For
+
+- 💬 **LLM Prototyping:** GPT-style transformer decoder with full training pipeline.
+- 🧠 **ASR Systems:** Whisper-style encoder-decoder for speech-to-text.
+- 🎓 **Teaching & Research:** Transformer mechanics, custom experiments.
+- ⚗️ **Inference Research:** Modify attention sparsity, decoding speed, etc.
+- 📦 **Production Deployment:** Modular hooks for optimization, quantization.
+
+---
+
+## 🧬 Core Modules
+
+| Folder             | Purpose                                                                 |
+| ------------------| ------------------------------------------------------------------------ |
+| `torchiFy/core/`   | Core transformer blocks (attention, embeddings, feedforward, etc.)     |
+| `torchiFy/models/` | Model definitions: GPT, Whisper, Encoder-Decoder Transformers          |
+| `torchiFy/nn/`     | Custom attention, masking, rotary/positional embeddings                |
+| `torchiFy/audio/`  | Speech preprocessing: MFCC, Log-Mel, audio tokenizers                  |
+| `torchiFy/train/`  | Training loop, loss functions, optimizers, schedulers                  |
+| `torchiFy/decode/` | Greedy decoding, beam search, LM scoring                               |
+| `torchiFy/utils/`  | Logging, timing, caching, weight loading/saving                        |
+| `torchiFy/tests/`  | Full unit and integration test suite                                   |
+| `configs/`         | YAML config files for models and training                              |
+| `scripts/`         | Pretraining, inference, dataset setup scripts                          |
+
+---
+
+## 🧱 File Structure Explained
+
+```
+TorchiFy-v1/
+├── torchiFy/
+│   ├── core/
+│   │   ├── attention.py
+│   │   ├── feedforward.py
+│   │   ├── embeddings.py
+│   │   ├── transformer_block.py
+│   ├── nn/
+│   │   ├── utils.py
+│   │   ├── mask.py
+│   ├── models/
+│   │   ├── gpt.py
+│   │   ├── whisper.py
+│   │   ├── encoder_decoder.py
+│   ├── decode/
+│   │   ├── beam.py
+│   │   ├── greedy.py
+│   ├── audio/
+│   │   ├── preprocess.py
+│   │   ├── tokenizer.py
+│   ├── train/
+│   │   ├── engine.py
+│   │   ├── losses.py
+│   │   ├── optim.py
+│   ├── utils/
+│   │   ├── logger.py
+│   │   ├── timer.py
+│   │   ├── weights.py
+│   ├── tests/
+│   │   ├── test_attention.py
+│   │   ├── test_gpt.py
+├── configs/
+│   ├── gpt_small.yaml
+│   ├── whisper_base.yaml
+├── scripts/
+│   ├── train_gpt.py
+│   ├── infer_speech.py
+│   ├── convert_audio.py
+├── README.md
+└── requirements.txt
+```
+
+---
+
+## 🔧 Installation
+
+```bash
+git clone https://github.com/RishitSaxena55/TorchiFy-v1.git
+cd TorchiFy-v1
+pip install -r requirements.txt
+```
+
+---
+
+## 🚦 Getting Started
+
+### 🧪 Run a Unit Test
+```bash
+pytest torchiFy/tests/
+```
+
+### 🔥 Train a GPT-like Model
+```bash
+python scripts/train_gpt.py --config configs/gpt_small.yaml
+```
+
+### 🎙️ Infer from Speech Input
+```bash
+python scripts/infer_speech.py --audio sample.wav --config configs/whisper_base.yaml
+```
+
+---
+
+## 🧠 Key Innovations
+
+- **No Hidden Blackboxes**
+- **Custom Masking Engines**
+- **Rotary Positional Embeddings**
+- **Audio-Aware Transformer**
+- **Beam Search from Scratch**
+- **Doc-rich Modules**
+
+---
+
+## 🧪 Testing & Validation
+
+```bash
+pytest torchiFy/tests/
+```
+
+---
+
+## 🛠️ Inference Strategies
+
+- ✅ Greedy decoding
+- ✅ Beam decoding with penalties
+- ✅ CTC + LM Rescoring
+- ✅ Caching of key-value pairs
+- ✅ TorchScript-compatible exports
+
+---
+
+## 🌍 Future Roadmap
+
+- [ ] FlashAttention Integration
+- [ ] Quantized Attention Blocks
+- [ ] Mixture of Experts
+- [ ] Streaming ASR
+- [ ] RLHF + PPO Support
+- [ ] Vision Transformers
+
+---
+
+## 🧑‍💻 Contributing
+
+We welcome contributors:
+
+- 🔁 Add new models or ASR frontends
+- 📊 Improve test coverage
+- 🧠 Propose architectural variants
+- 📚 Help write tutorials
 
 ---
 
 ## 📜 License
 
-This project is licensed under the **MIT License**, giving you full freedom to use, distribute, and modify it for commercial or academic purposes.
+This project is licensed under the **MIT License**.
 
 ---
 
-## 🙋‍♂️ Contributing
+## ✨ Final Note
 
-We welcome contributors from all backgrounds—students, researchers, indie developers, and professionals.
+> **"TorchiFy is not just code—it's a canvas for building the next frontier of machine intelligence. Let's build from scratch, understand deeply, and create openly."**
 
-If you're passionate about:
-
-* Building transformer architectures from scratch
-* Contributing to educational open-source tools
-* Innovating in ASR/NLP/model design
-
-...then fork ⭐ the repo, open an issue, and become part of our community. Together, let's push open-source AI forward.
-
-> “A journey into building intelligence. One tensor at a time.”
-
-For collaboration, enhancements, or to showcase what you’ve built with MyTorch, open a discussion or tag us at [MyTorch-v1](https://github.com/RishitSaxena55/MyTorch-v1).
+**GitHub**: [RishitSaxena55/TorchiFy-v1](https://github.com/RishitSaxena55/TorchiFy-v1)  
+**Author**: [Rishit Saxena](https://www.linkedin.com/in/rishit-saxena-12922531b/)
