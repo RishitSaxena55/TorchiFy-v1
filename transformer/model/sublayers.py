@@ -75,7 +75,7 @@ class SelfAttentionLayer(nn.Module):
                                        need_weights=True,
                                        attn_mask=attn_mask,
                                        average_attn_weights=True,
-                                       is_causal=True)
+                                       is_causal=True if attn_mask is not None else False)
 
         # For some regularization you can apply dropout and then add residual connection
         x = self.dropout(x)
@@ -112,18 +112,16 @@ class CrossAttentionLayer(nn.Module):
             dropout (float): The dropout rate.
         '''
         super().__init__()
-        # TODO: Implement __init__
 
-        # TODO: Initialize the multi-head attention mechanism (use nn.MultiheadAttention)
-        self.mha = NotImplementedError
+        # Initialize the multi-head attention mechanism (use nn.MultiheadAttention)
+        self.mha = nn.MultiheadAttention(d_model, num_heads, batch_first=True, dropout=dropout)
 
-        # TODO: Initialize the normalization layer (use nn.LayerNorm)
-        self.norm = NotImplementedError
+        # Initialize the normalization layer (use nn.LayerNorm)
+        self.norm = nn.LayerNorm(d_model)
 
-        # TODO: Initialize the dropout layer
-        self.dropout = NotImplementedError
+        # Initialize the dropout layer
+        self.dropout = nn.Dropout(p=dropout)
 
-        raise NotImplementedError  # Remove once implemented
 
     def forward(self, x: torch.Tensor, y: torch.Tensor, key_padding_mask: Optional[torch.Tensor] = None,
                 attn_mask: Optional[torch.Tensor] = None) -> Tuple[torch.Tensor, torch.Tensor]:
@@ -139,17 +137,24 @@ class CrossAttentionLayer(nn.Module):
             x (torch.Tensor): The output tensor. shape: (batch_size, seq_len, d_model)
             mha_attn_weights (torch.Tensor): The attention weights. shape: (batch_size, seq_len, seq_len)   
         '''
-        # TODO: Implement forward: Follow the figure in the writeup
 
-        # TODO: Cross-attention
+        # Cross-attention
         # Be sure to use the correct arguments for the multi-head attention layer
-        # Set need_weights to True and average_attn_weights to True so we can get the attention weights 
-        x, mha_attn_weights = NotImplementedError, NotImplementedError
+        # Set need_weights to True and average_attn_weights to True so we can get the attention weights
+        residual = x
+        x = self.norm(x)
+        x, mha_attn_weights = self.mha(x, y, y,
+                                       key_padding_mask=key_padding_mask,
+                                       need_weights=True,
+                                       attn_mask=attn_mask,
+                                       average_attn_weights=True)
 
-        # NOTE: For some regularization you can apply dropout and then add residual connection
+        # For some regularization you can apply dropout and then add residual connection
+        x = self.dropout(x)
+        x = x + residual
 
-        # TODO: Return the output tensor and attention weights
-        raise NotImplementedError  # Remove once implemented
+        # Return the output tensor and attention weights
+        return x, mha_attn_weights
 
 
 ## -------------------------------------------------------------------------------------------------  
