@@ -1,4 +1,4 @@
-# ⚡️TorchiFy-v1
+# ⚡️TorchiFy-v
 
 ![License](https://img.shields.io/github/license/RishitSaxena55/TorchiFy-v1)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
