@@ -904,7 +904,7 @@ tokens = generator.generate_beam(
 ```bibtex
 @software{torchify2024,
   title={TorchiFy-v1: Building Deep Learning Models from First Principles},
-  author={Saxena, Rishi},
+  author={Rishit Saxena},
   year={2024},
   url={https://github.com/RishitSaxena55/TorchiFy-v1}
 }
